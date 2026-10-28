@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SiteSprout — Websites that grow: built fast, then grown with SEO + GEO</title>
+<meta name="description" content="SiteSprout: low-priced WordPress and Shopify websites for US small businesses, grown with SEO + GEO monthly retainers and overseas expansion consultation.">
+<meta property="og:title" content="SiteSprout — Websites that grow">
+<meta property="og:description" content="Built fast, then grown with SEO + GEO. Low-priced website builds, SEO + GEO retainers, and China/Hong Kong to USA consultation.">
+<meta property="og:type" content="website">
+<!-- GA4 佔位註解：未填入真實 Measurement ID，正式上線前才由負責人填入，切勿在此硬編 ID -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script> -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* Tailwind 設定：深色企業底色 + 品牌綠點綴 */
+tailwind.config = { theme: { extend: { colors: { sprout: '#35c87a', sproutdark: '#177a45', ink: '#0a120e' } } } };
+</script>
+<style>
+  /* ========== Liquid Glass + 深色企業風格 ========== */
+  html { scroll-behavior: smooth; }
+  body { background: #0a120e; color: #eef4f0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .glass { background: rgba(16,28,22,.58); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); border: 1px solid rgba(255,255,255,.14); box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.18); border-radius: 18px; }
+  .glass-light { background: rgba(255,255,255,.08); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.14); border-radius: 16px; }
+  .card { transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(53,200,122,.45), 0 0 28px rgba(53,200,122,.25); }
+  .btn { display:inline-block; background:#35c87a; color:#06130b; font-weight:800; padding:12px 22px; border-radius:999px; text-decoration:none; transition: transform .2s ease, box-shadow .2s ease; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(53,200,122,.45); }
+  .btn-ghost { display:inline-block; border:1px solid rgba(255,255,255,.35); color:#fff; font-weight:700; padding:12px 22px; border-radius:999px; text-decoration:none; }
+  .btn-ghost:hover { border-color:#35c87a; color:#35c87a; }
+  .tag { display:inline-block; background:rgba(53,200,122,.18); color:#7ee8ad; font-weight:700; font-size:12px; padding:4px 10px; border-radius:999px; }
+  .muted { color:#b9c9c0; } .price { font-size:32px; font-weight:900; color:#fff; }
+  .page { display:none; } .page.active { display:block; }
+  .reveal { opacity:0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity:1; transform:none; }
+  /* 導航欄滾動透明變化 */
+  #topnav { transition: background .3s ease, backdrop-filter .3s ease, box-shadow .3s ease; background: rgba(10,18,14,.55); backdrop-filter: blur(14px); }
+  #topnav.scrolled { background: rgba(10,18,14,.88); box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+  .navlink { color:#dbe7df; text-decoration:none; font-weight:600; } .navlink:hover, .navlink.active { color:#35c87a; }
+  /* 滑鼠跟隨柔光 */
+  #glow { position:fixed; width:420px; height:420px; border-radius:50%; pointer-events:none; z-index:1; background: radial-gradient(circle, rgba(53,200,122,.16), transparent 65%); transform: translate(-50%,-50%); }
+  /* Hero 3D 畫布與 CSS 後備漸變（Three.js 失效時仍有畫面，絕不空白） */
+  #hero3d { position:absolute; inset:0; width:100%; height:100%; }
+  .hero-fallback { background: radial-gradient(800px 400px at 20% 10%, rgba(53,200,122,.35), transparent 60%), radial-gradient(700px 400px at 85% 20%, rgba(80,140,255,.28), transparent 60%), linear-gradient(180deg,#0a120e,#12261a); }
+  input, select, textarea { width:100%; padding:11px; border-radius:10px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); color:#fff; }
+  input::placeholder, textarea::placeholder { color:#9db3a8; }
+  table { width:100%; border-collapse:collapse; } th, td { border:1px solid rgba(255,255,255,.15); padding:10px; text-align:left; vertical-align:top; }
+  th { background: rgba(53,200,122,.15); }
+  @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } .reveal { opacity:1; transform:none; } }
+  @media (max-width: 760px) { .navlinks { display:none; } .navlinks.open { display:flex; flex-direction:column; } }
+</style>
+</head>
+<body>
+<div id="glow" aria-hidden="true"></div>
+<!-- ========== 導航欄（錨點路由：點擊切換 10 個版塊） ========== -->
+<header id="topnav" class="fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
+    <a href="#home" class="text-xl font-black" style="color:#fff">Site<span style="color:#35c87a">Sprout</span></a>
+    <button id="menuBtn" class="md:hidden btn" type="button">Menu</button>
+    <nav id="navlinks" class="navlinks hidden md:flex flex-wrap gap-4 text-sm">
+      <a class="navlink" href="#home">Home</a>
+      <a class="navlink" href="#services">Services</a>
+      <a class="navlink" href="#templates">Templates</a>
+      <a class="navlink" href="#template-detail">Template Detail</a>
+      <a class="navlink" href="#pricing">Pricing</a>
+      <a class="navlink" href="#usa">China / HK → USA</a>
+      <a class="navlink" href="#process">Process</a>
+      <a class="navlink" href="#work">Work</a>
+      <a class="navlink" href="#faq">FAQ</a>
+      <a class="navlink" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+<main class="relative z-10 pt-20">
+
+<!-- ========== 1. Home 首頁 ========== -->
+<!-- 品牌口號與核心策略：低價建站是獲客入口，不是主利潤 -->
+<section id="home" class="page active">
+  <div class="relative overflow-hidden hero-fallback" style="min-height:560px">
+    <canvas id="hero3d" aria-hidden="true"></canvas>
+    <div class="relative max-w-6xl mx-auto px-5 py-20">
+      <p class="tag reveal">SiteSprout · US Small Business Websites</p>
+      <h1 class="reveal text-4xl md:text-6xl font-black leading-tight mt-4" style="max-width:820px">Websites that grow: built fast, then grown with SEO + GEO</h1>
+      <p class="reveal text-lg muted mt-4" style="max-width:760px">We build your website at a low entry price — then we grow it. Our main work after launch is SEO + GEO monthly optimisation, followed by overseas expansion accompaniment. No inflated build fees. No vague promises. Just a site that is ready to grow from day one.</p>
+      <div class="reveal flex flex-wrap gap-3 mt-6">
+        <a class="btn" href="#pricing">See pricing →</a>
+        <a class="btn-ghost" href="#templates">Browse 10 templates →</a>
+        <a class="btn-ghost" href="#usa">China / Hong Kong → USA consultation →</a>
+      </div>
+      <!-- 核心策略三段：獲客、主收入、第二收入 -->
+      <div class="grid md:grid-cols-3 gap-4 mt-10">
+        <div class="glass card p-5 reveal"><span class="tag">Step 1 · Entry</span><h3 class="font-bold text-lg mt-2">Low-priced build attracts</h3><p class="muted text-sm mt-1">Launch US$2,900 or Store US$4,500. The build is the entry point — not the main profit.</p></div>
+        <div class="glass card p-5 reveal"><span class="tag">Step 2 · Main income</span><h3 class="font-bold text-lg mt-2">SEO + GEO grows it monthly</h3><p class="muted text-sm mt-1">From US$950/month. Google search + AI search (ChatGPT, Gemini) optimisation, reported every month.</p></div>
+        <div class="glass card p-5 reveal"><span class="tag">Step 3 · Second income</span><h3 class="font-bold text-lg mt-2">Overseas accompaniment</h3><p class="muted text-sm mt-1">Phase 1 consultation first (bot → human). Phase 2 formal filing is Coming Soon — never sold as a Phase 1 delivery.</p></div>
+      </div>
+      <div class="glass p-5 mt-6 reveal"><p class="text-sm"><strong>No guarantees, ever:</strong> we do not promise Google rankings, AI citations, sales, or approval results. We promise the work listed in your package, delivered and reported.</p></div>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <h2 class="text-3xl font-black reveal">Three ways to start</h2>
+    <div class="grid md:grid-cols-3 gap-4 mt-6">
+      <div class="glass card p-6 reveal"><span class="tag">WordPress</span><h3 class="font-bold text-xl mt-2">Launch</h3><p class="price mt-2">US$2,900 <span class="text-sm muted font-normal">one-time</span></p><p class="muted text-sm">Service website, 5–8 pages, responsive, basic SEO, GA4, contact form, 2 revision rounds, 30 days support.</p><a class="btn mt-4" href="#pricing">Launch details →</a></div>
+      <div class="glass card p-6 reveal"><span class="tag">Shopify</span><h3 class="font-bold text-xl mt-2">Store</h3><p class="price mt-2">US$4,500 <span class="text-sm muted font-normal">one-time</span></p><p class="muted text-sm">Brand store, up to 30 products set up, payments / tax / shipping configured, basic SEO, GA4.</p><a class="btn mt-4" href="#pricing">Store details →</a></div>
+      <div class="glass card p-6 reveal"><span class="tag">Monthly · Flagship</span><h3 class="font-bold text-xl mt-2">SEO + GEO Growth</h3><p class="price mt-2">US$1,800 <span class="text-sm muted font-normal">/ month</span></p><p class="muted text-sm">Google + AI search together. The flagship retainer. Minimum initial term: 3 months, then rolling monthly.</p><a class="btn mt-4" href="#pricing">Growth details →</a></div>
+    </div>
+    <div class="glass p-6 mt-8 reveal"><h3 class="font-bold">How the funnel works — in order, no skipping</h3><ol class="list-decimal ml-5 mt-2 muted"><li>Low-price Launch / Store attracts and closes the build.</li><li>The build is SEO-ready from the start.</li><li>At launch, we immediately offer SEO + GEO monthly (main income).</li><li>After delivery, we guide you to overseas consultation — never before the site is delivered.</li></ol></div>
+  </div>
+</section>
+
+<!-- ========== 2. Services 服務 ========== -->
+<section id="services" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">Services</p>
+    <h2 class="text-4xl font-black mt-2 reveal">What we build, then what we grow</h2>
+    <p class="muted mt-2 reveal">Two layers, kept separate. Layer 1 is this SiteSprout operating site. Layer 2 is your delivered site — WordPress or Shopify, in your own name, 100% yours.</p>
+    <div class="grid md:grid-cols-2 gap-4 mt-8">
+      <div class="glass card p-6 reveal"><span class="tag">One-time · WordPress</span><h3 class="font-bold text-xl mt-2">Launch — US$2,900 one-time</h3><p class="muted text-sm mt-2">5–8 pages · Responsive · Basic SEO · GA4 · Contact form · 2 revision rounds · 30 days post-launch support. For service businesses: restaurants, salons, contractors, clinics, studios, agencies, real estate, auto repair.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">One-time · Shopify</span><h3 class="font-bold text-xl mt-2">Store — US$4,500 one-time</h3><p class="muted text-sm mt-2">Up to 30 products set up · Payment / tax / shipping configuration · Basic SEO · GA4 · 2 revision rounds · Launch support. Client pays Shopify plan fees and card fees separately.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Monthly · SEO + GEO</span><h3 class="font-bold text-xl mt-2">SEO Essential US$950 / Growth US$1,800 / Advanced US$3,500</h3><p class="muted text-sm mt-2">GEO = Generative Engine Optimisation: exposure in ChatGPT, Gemini and other AI search answers. Essential has no GEO (add-on from US$600/month). Growth is the flagship. Advanced covers multi-region / national high-competition markets and includes GEO. Minimum initial term: 3 months.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Monthly · Optional</span><h3 class="font-bold text-xl mt-2">Care — US$149/month</h3><p class="muted text-sm mt-2">Backups, security checks, and small text edits only. Care does NOT include SEO or GEO work. If you already have an SEO + GEO tier, do not buy Care on top for the same work.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Phase 1 · Consultation only</span><h3 class="font-bold text-xl mt-2">Overseas consultation — no filing, no filing fee</h3><p class="muted text-sm mt-2">General process answers on LLC, EIN, US bank collection, Amazon / Walmart / TikTok Shop onboarding. Bot answers FAQs first, then hands off to a professional human customer service team on trigger conditions. Phase 2 formal filing is Coming Soon.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Layer 1 · This site</span><h3 class="font-bold text-xl mt-2">How this site itself runs</h3><p class="muted text-sm mt-2">HTML + Tailwind CSS v3 + Vanilla JS + Three.js, deployed via GitHub + Cloudflare Pages + Supabase + Stripe + Resend. Functions: showcase, 10 template demos, pricing, lead forms, overseas consultation bot interface, GA4 tracking (placeholder only in this file).</p></div>
+    </div>
+    <div class="glass p-6 mt-6 reveal"><p class="text-sm"><strong>What the client pays separately:</strong> domain, hosting, and Shopify platform fees are the client's own costs, in the client's own name. Premium / Pro theme upgrades and paid Shopify theme licences (one licence per store) are also separate unless explicitly stated otherwise.</p></div>
+  </div>
+</section>
+
+<!-- ========== 3. Templates 模板總覽 ========== -->
+<!-- 第三方 theme 標示規則：必須寫明來源，絕不能聲稱為 SiteSprout 原創設計 -->
+<section id="templates" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">Templates · 10</p>
+    <h2 class="text-4xl font-black mt-2 reveal">Pick a template made for your business</h2>
+    <p class="muted mt-2 reveal">These are third-party themes, not SiteSprout original designs. Demo images and copy from any theme are replaced with your own content. WordPress themes below are WordPress.org GPL free base; any Pro upgrade is paid separately. Shopify themes Dawn and Craft are free and reusable across stores; paid theme licences are one per store and paid separately.</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T1 — Restaurant &amp; Cafe</h3><p class="muted text-sm mt-1">Third-party theme: Restaurant and Cafe — WordPress.org (GPL, free base). Menu, hours, location, reviews. Action: book a table or order.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T1 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T2 — Salon, Beauty &amp; Spa</h3><p class="muted text-sm mt-1">Third-party theme: Spa and Salon — WordPress.org (GPL, free base). Price list, portfolio, booking. Action: book an appointment.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T2 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T3 — Contractor &amp; Home Services</h3><p class="muted text-sm mt-1">Third-party theme: Construction Service — WordPress.org (GPL, free base). Quote form in hero, service area, licence/trust, gallery. Action: request a quote.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T3 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">Shopify</span><h3 class="font-bold mt-2">T4 — Retail &amp; E-commerce</h3><p class="muted text-sm mt-1">Third-party theme: Dawn — Shopify Theme Store (free, reusable across stores). Products, reviews, shipping, returns. Action: shop and check out.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T4 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T5 — Professional Services</h3><p class="muted text-sm mt-1">Third-party theme: Consultancy Services — WordPress.org (GPL, free base). Credentials, services, consultation booking. Action: book a consultation.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T5 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T6 — Medical, Dental &amp; Clinic</h3><p class="muted text-sm mt-1">Third-party theme: FSE Medical Clinic — WordPress.org (GPL, free base). General clinic theme — dental-specific sections to be confirmed per client. Services, insurance info, appointment. Action: book an appointment.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T6 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T7 — Fitness &amp; Wellness Studio</h3><p class="muted text-sm mt-1">Third-party theme: VW Fitness — WordPress.org (GPL, free base). Class schedule, membership, trial offer. Action: book a trial class.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T7 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T8 — Real Estate &amp; Property</h3><p class="muted text-sm mt-1">Third-party theme: Real Estate Company — WordPress.org (GPL, free base). Listings, areas, enquiry. IDX/MLS depends on client plugin/data access — not promised by default. Action: enquire about a property.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T8 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">WordPress</span><h3 class="font-bold mt-2">T9 — Auto Repair &amp; Services</h3><p class="muted text-sm mt-1">Third-party theme: Car Mechanic — WordPress.org (GPL, free base). Price list, services, booking. Action: book a service.</p><a class="btn-ghost mt-3" href="#contact">Enquire about T9 →</a></div>
+      <div class="glass card p-5 reveal"><span class="tag">Shopify · Example detail →</span><h3 class="font-bold mt-2">T10 — Brand Store for Cross-border Sellers</h3><p class="muted text-sm mt-1">Third-party theme: Craft — Shopify Theme Store (free, reusable across stores). Brand story, US positioning, products, US shipping/returns. Action: shop, or start a US expansion consultation.</p><a class="btn mt-3" href="#template-detail">View T10 detail example →</a></div>
+    </div>
+    <div class="glass p-5 mt-6 reveal"><p class="text-sm">Style references only — not our work, not our clients: Allbirds and Gymshark are cited only as Shopify store style references (clean navigation, product-first layout, brand story placement). Their images, copy, product names, and branding are not used here.</p></div>
+  </div>
+</section>
+
+<!-- ========== 4. Template Detail 示例（以 T10 為例） ========== -->
+<section id="template-detail" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">Template detail example</p>
+    <h2 class="text-4xl font-black mt-2 reveal">T10 — Brand Store for Cross-border Sellers</h2>
+    <p class="muted mt-2 reveal">This is one full detail example. Other templates follow the same detail structure: platform, must-have sections, conversion action, scope, and price link.</p>
+    <div class="grid md:grid-cols-2 gap-4 mt-8">
+      <div class="glass card p-6 reveal"><span class="tag">Shopify</span><h3 class="font-bold text-xl mt-2">Platform &amp; theme</h3><p class="muted text-sm mt-2">Shopify. Third-party theme: Craft — Shopify Theme Store (free, reusable across stores). Paid alternative Impact, if chosen, is one licence per store, verified live at quoting time, and paid separately from Store US$4,500 and from Shopify plan fees. This theme is not a SiteSprout original design.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Must-have sections</span><h3 class="font-bold text-xl mt-2">What the store must contain</h3><p class="muted text-sm mt-2">Brand story and US positioning, hero product range, product pages with reviews, US shipping and returns policy, size/material information, trust signals (secure checkout, contact), and a clear consultation entry point.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Conversion action</span><h3 class="font-bold text-xl mt-2">What the page is built to get</h3><p class="muted text-sm mt-2">Primary: shop and check out. Secondary: start a US expansion consultation (Phase 1 consultation only — see the USA page). No checkout, filing, or approval outcome is promised on this page.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Scope &amp; price link</span><h3 class="font-bold text-xl mt-2">Scope and price</h3><p class="muted text-sm mt-2">Store US$4,500 one-time: up to 30 products set up, payment / tax / shipping configuration, basic SEO, GA4, 2 revision rounds, launch support. Client pays domain, Shopify plan (from US$39/month in the current reference pricing), card fees, and any paid theme licence separately. Beyond scope is quoted separately.</p><a class="btn mt-4" href="#pricing">See Store pricing →</a> <a class="btn-ghost mt-4" href="#contact">Start T10 →</a></div>
+    </div>
+    <div class="glass p-5 mt-6 reveal"><p class="text-sm">Demo note: any demo products, images, or copy shown in a theme demo are placeholders. Your store launches with your own products, images, and copy only.</p></div>
+  </div>
+</section>
+
+<!-- ========== 5. Pricing 定價頁 ========== -->
+<!-- 定價表：絕對不能改動數字；排除項必須寫清楚 -->
+<section id="pricing" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">Pricing · USD only</p>
+    <h2 class="text-4xl font-black mt-2 reveal">Clear prices. Clear scope. No hidden build fees.</h2>
+    <h3 class="text-2xl font-bold mt-8 reveal">One-time builds (acquisition)</h3>
+    <div class="overflow-x-auto mt-4 reveal"><table>
+      <tr><th>Package</th><th>Price</th><th>Included</th><th>Excluded / client pays separately</th></tr>
+      <tr><td><strong>Launch</strong> — WordPress service site</td><td class="price">US$2,900</td><td>5–8 pages, responsive, basic SEO, GA4, contact form, 2 revision rounds, 30 days post-launch support</td><td>Domain, hosting, Pro theme upgrades</td></tr>
+      <tr><td><strong>Store</strong> — Shopify store</td><td class="price">US$4,500</td><td>Up to 30 products set up, payment / tax / shipping configuration, basic SEO, GA4, 2 revision rounds, launch support</td><td>Domain, Shopify plan fees, card fees, paid theme licence (one per store)</td></tr>
+    </table></div>
+    <h3 class="text-2xl font-bold mt-8 reveal">Monthly retainers (main income)</h3>
+    <div class="overflow-x-auto mt-4 reveal"><table>
+      <tr><th>Retainer</th><th>Price</th><th>Scope</th></tr>
+      <tr><td><strong>SEO Essential</strong></td><td class="price">US$950/mo</td><td>Single-region local Google SEO. NO GEO. GEO add-on from US$600/month.</td></tr>
+      <tr><td><strong>SEO + GEO Growth</strong> (flagship)</td><td class="price">US$1,800/mo</td><td>Google + AI search (ChatGPT, Gemini) optimisation together.</td></tr>
+      <tr><td><strong>SEO + GEO Advanced</strong></td><td class="price">US$3,500/mo</td><td>Multi-region / national high-competition markets, deep optimisation, GEO included.</td></tr>
+      <tr><td><strong>Care</strong> (optional, separate)</td><td class="price">US$149/mo</td><td>Backups, security checks, small text edits only. Does NOT include SEO or GEO work.</td></tr>
+    </table></div>
+    <p class="muted text-sm mt-2 reveal">Minimum initial term for SEO + GEO retainers: 3 months, then rolling monthly. Ad spend is always separate. We promise work delivered + monthly reporting — never rankings, AI citations, or revenue.</p>
+    <h3 class="text-2xl font-bold mt-8 reveal">First-year examples (service fees, verified by calculation)</h3>
+    <div class="overflow-x-auto mt-4 reveal"><table>
+      <tr><th>Combination</th><th>First-year total</th></tr>
+      <tr><td>Launch + Essential</td><td>US$14,300 (US$2,900 + US$950 × 12)</td></tr>
+      <tr><td>Launch + Essential + GEO add-on (US$600/mo)</td><td>US$21,500 (US$2,900 + US$1,550 × 12)</td></tr>
+      <tr><td>Launch + Growth</td><td>US$24,500 (US$2,900 + US$1,800 × 12)</td></tr>
+      <tr><td>Store + Growth — service fees</td><td>US$26,100 (US$4,500 + US$1,800 × 12); US$26,568 all-in with Shopify US$39 × 12 = US$468</td></tr>
+      <tr><td>Store + Advanced — service fees</td><td>US$46,500 (US$4,500 + US$3,500 × 12); US$46,968 all-in with Shopify US$468/year</td></tr>
+    </table></div>
+    <div class="glass p-5 mt-6 reveal"><p class="text-sm"><strong>Scope rule:</strong> page count, revision rounds, and support period are fixed in the contract. Beyond scope is quoted separately — no bottomless scope.</p></div>
+  </div>
+</section>
+
+<!-- ========== 6. China / Hong Kong to USA 出海專頁（中英雙語） ========== -->
+<!-- 出海專頁：第一期只做諮詢，絕不承諾審批、絕不報代辦價 -->
+<section id="usa" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">China / Hong Kong → USA · 中港品牌出海美國</p>
+    <h2 class="text-4xl font-black mt-2 reveal">從中國 / 香港，把品牌賣到美國</h2>
+    <h3 class="text-xl font-bold mt-2 reveal">For Chinese and Hong Kong brands that want US sales — start with a website, then grow with consultation.</h3>
+    <p class="muted mt-3 reveal">適合對象 / Who this is for：已有產品、想在美國銷售的中港品牌，但未有美國公司、美國收款帳戶，或未通過 Amazon / Walmart / TikTok Shop 審核的團隊。This page is consultation in Phase 1. It is not legal advice, not tax advice, and not a filing service.</p>
+    <h3 class="text-2xl font-bold mt-8 reveal">常見痛點 / Common pain points</h3>
+    <div class="grid md:grid-cols-3 gap-4 mt-4">
+      <div class="glass card p-5 reveal"><h4 class="font-bold">沒有美國主體，就開不了收款</h4><p class="muted text-sm">No US entity → no US Stripe / TikTok Shop in many cases. Without a US account, currency conversion alone can cost 2–5% per transaction.</p></div>
+      <div class="glass card p-5 reveal"><h4 class="font-bold">平台審核各有門檻</h4><p class="muted text-sm">Platform gates differ: Shopify needs no EIN to open a store, but most payment tools need US tax documents; Amazon is easier with a US entity; Walmart usually requires a US entity + EIN; TikTok Shop US is the strictest.</p></div>
+      <div class="glass card p-5 reveal"><h4 class="font-bold">網站、收款、平台要一次過對齊</h4><p class="muted text-sm">A brand site (T10), a payment route, and a marketplace route must line up — otherwise the site launches but cannot collect or sell properly.</p></div>
+    </div>
+    <h3 class="text-2xl font-bold mt-8 reveal">六步路線圖 / 6-step roadmap</h3>
+    <div class="overflow-x-auto mt-4 reveal"><table>
+      <tr><th>Step</th><th>步驟 / Step</th><th>我們幫什麼 / What SiteSprout helps with</th></tr>
+      <tr><td>1</td><td>市場定位 / Market positioning</td><td>Consultation: audience, price, and US positioning for your brand site.</td></tr>
+      <tr><td>2</td><td>美國公司 + EIN / US company + EIN</td><td>Phase 1: general process consultation only. Phase 2 filing: Coming Soon. No filing, no filing fee, no approval promise in Phase 1.</td></tr>
+      <tr><td>3</td><td>銀行 + Stripe / PayPal / Bank + payments</td><td>Phase 1: general process consultation only. Account opening itself is decided by the bank / payment provider.</td></tr>
+      <tr><td>4</td><td>品牌網站 T10 / T10 brand site</td><td>Store US$4,500 build (see Pricing). This is a Phase 1 deliverable.</td></tr>
+      <tr><td>5</td><td>Amazon / Walmart / TikTok Shop 上架 / Marketplace onboarding</td><td>Phase 1: general process + platform-threshold consultation only. Phase 2 onboarding: Coming Soon.</td></tr>
+      <tr><td>6</td><td>美國 SEO + 廣告 / US SEO + ads</td><td>SEO + GEO retainers (US$950–US$3,500/month). Ad spend always separate. No ranking or revenue promise.</td></tr>
+    </table></div>
+    <h3 class="text-2xl font-bold mt-8 reveal">我們幫 vs 第三方 / Help vs third parties</h3>
+    <div class="overflow-x-auto mt-4 reveal"><table>
+      <tr><th>事項 / Item</th><th>SiteSprout</th><th>第三方 / Third party</th></tr>
+      <tr><td>網站、SEO、GEO</td><td>Direct delivery (Launch / Store / retainers)</td><td>—</td></tr>
+      <tr><td>公司、稅務、法律判斷</td><td>General consultation only in Phase 1</td><td>Accountant / lawyer decides individual cases</td></tr>
+      <tr><td>銀行、平台審批</td><td>General process consultation only</td><td>Bank / platform decides approval, never SiteSprout</td></tr>
+    </table></div>
+    <div class="glass p-6 mt-6 reveal"><h3 class="font-bold">開始諮詢 / Start a consultation</h3><p class="muted text-sm mt-1">Phase 1 consultation flow: a bot answers common questions first. On a handoff trigger, a professional human customer service team takes over directly. Triggers: you ask for a human; the question is beyond the FAQ; individual tax / legal / eligibility judgement is needed; you ask about approval outcomes; you ask for a filing price or order; sensitive documents are involved.</p><a class="btn mt-4" href="#contact">Start consultation →</a> <a class="btn-ghost mt-4" href="#faq">Read the FAQ first →</a></div>
+    <div class="glass p-5 mt-4 reveal"><p class="text-sm"><strong>Phase 2 Coming Soon：</strong>正式代辦公司註冊、EIN、銀行帳戶、平台上架、長期陪跑 — 現階段只標示 Coming Soon，唔做交付，唔收代辦費，唔報代辦價。</p></div>
+  </div>
+</section>
+
+<!-- ========== 7. Process 流程頁 ========== -->
+<section id="process" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">Process</p>
+    <h2 class="text-4xl font-black mt-2 reveal">From first call to a growing site — in order</h2>
+    <p class="muted mt-2 reveal">No skipping. The funnel order is part of the service, not just a diagram.</p>
+    <div class="grid md:grid-cols-2 gap-4 mt-8">
+      <div class="glass card p-6 reveal"><span class="tag">Step 1</span><h3 class="font-bold text-xl mt-2">Free 30-minute call + template pick</h3><p class="muted text-sm mt-2">We confirm your business type, pick T1–T10, and fix the contract scope: pages, revision rounds, support period.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Step 2</span><h3 class="font-bold text-xl mt-2">Low-price build (Launch / Store)</h3><p class="muted text-sm mt-2">Content + design + SEO-ready structure from the start. 2 revision rounds. No bottomless scope — beyond scope is quoted separately.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Step 3</span><h3 class="font-bold text-xl mt-2">Launch + immediate SEO + GEO offer</h3><p class="muted text-sm mt-2">At launch, we offer the SEO + GEO retainer (main income). The site is already built to be optimised — it does not need rebuilding to start SEO.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Step 4</span><h3 class="font-bold text-xl mt-2">Monthly growth + reporting</h3><p class="muted text-sm mt-2">Technical SEO, content, local SEO, and GEO work as listed in your tier, with a monthly report. Minimum initial term: 3 months.</p></div>
+      <div class="glass card p-6 reveal"><span class="tag">Step 5</span><h3 class="font-bold text-xl mt-2">After delivery: overseas consultation</h3><p class="muted text-sm mt-2">Only after the site is delivered do we guide you to overseas consultation (Phase 1, bot → human). Phase 2 filing and long-term accompaniment are Coming Soon.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 8. Work 案例（刻意留白，絕不造假） ========== -->
+<section id="work" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">Work</p>
+    <h2 class="text-4xl font-black mt-2 reveal">Work</h2>
+    <div class="glass p-8 mt-6 reveal">
+      <p class="text-lg"><strong>No cases yet — and we will not invent any.</strong></p>
+      <p class="muted mt-2">This page is intentionally empty. SiteSprout is a new brand. We do not show fake clients, fake case studies, or fake testimonials to fill it. Real client work will be added here only with that client's permission, with real results described honestly — never with promised rankings or revenue.</p>
+      <p class="muted mt-2">In the meantime, the best preview of our work is the template structure itself: see <a href="#templates" style="color:#35c87a">Templates</a> and the full <a href="#template-detail" style="color:#35c87a">T10 detail example</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 9. FAQ ========== -->
+<!-- 免責與鐵則：必須完整出現，不能刪減 -->
+<section id="faq" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">FAQ &amp; Disclaimer</p>
+    <h2 class="text-4xl font-black mt-2 reveal">Questions, answered plainly</h2>
+    <div class="space-y-4 mt-8">
+      <div class="glass p-5 reveal"><h3 class="font-bold">Iron rule 1 — What is fixed in a build package?</h3><p class="muted text-sm mt-1">Page count, revision rounds, and support period are fixed in the contract: Launch 5–8 pages, 2 revision rounds, 30 days support; Store up to 30 products, 2 revision rounds, launch support. Beyond scope is quoted separately. There is no bottomless scope.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">Iron rule 2 — What do you promise?</h3><p class="muted text-sm mt-1">We promise work delivery only: the listed build work, the listed monthly SEO/GEO work, and monthly reporting. We never promise third-party approval, Google rankings, AI citations, or revenue results — for SEO/GEO or for overseas consultation.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">What is GEO?</h3><p class="muted text-sm mt-1">GEO = Generative Engine Optimisation: making your business visible in AI search answers (ChatGPT, Gemini, and other AI search), through structured content, entity clarity, FAQs, and citations — not by gaming an AI model, and never with a promised citation.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">What do I pay separately from Launch / Store?</h3><p class="muted text-sm mt-1">Domain, hosting, Shopify plan fees, card fees, ad spend, and any Pro / paid theme licence (one licence per Shopify store). These are your costs, in your name, unless a written quote says otherwise.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">Who owns my website?</h3><p class="muted text-sm mt-1">You do, 100%. Domain and hosting are in your name. WordPress sites (T1–T3, T5–T9) and Shopify stores (T4, T10) are delivered to you — SiteSprout does not hold your site hostage for a platform rent.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">Phase 1 vs Phase 2 overseas service — what is the difference?</h3><p class="muted text-sm mt-1">Phase 1 (now): consultation only. No filing, no filing fee, no filing price quoted, no approval promise. Phase 2 (Coming Soon): formal filing for company registration, EIN, bank account, platform onboarding, and long-term accompaniment. Phase 2 is not delivered in Phase 1.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">How does the consultation bot work, and when does a human take over?</h3><p class="muted text-sm mt-1">The bot answers common process questions first. It hands off to a professional human customer service team when: you ask for a human; the question is beyond the FAQ; individual tax / legal / eligibility judgement is needed; you ask about approval outcomes; you ask for a filing price or order; or sensitive documents are involved. The bot never gives individual tax/legal conclusions and never collects passwords or full ID documents.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">Is the consultation legal or tax advice?</h3><p class="muted text-sm mt-1">No. Phase 1 consultation covers general process information only. Individual cases are decided by your accountant, lawyer, bank, or the platform itself.</p></div>
+      <div class="glass p-5 reveal"><h3 class="font-bold">Can I cancel a monthly retainer?</h3><p class="muted text-sm mt-1">SEO + GEO retainers have a minimum initial term of 3 months, then roll monthly. Care is monthly and separate from SEO/GEO work.</p></div>
+    </div>
+    <div class="glass p-5 mt-6 reveal"><p class="text-sm"><strong>Disclaimer:</strong> All prices are in USD. Prices, platform fees, and theme licences can change at the provider's own rates; the price in your signed quote is the price that applies. Nothing on this site is legal, tax, or financial advice, and nothing here guarantees a third party's decision.</p></div>
+  </div>
+</section>
+
+<!-- ========== 10. Contact 聯繫頁 ========== -->
+<!-- 表單佔位：前端演示，絕不偽裝已提交到後端；絕不收集密碼或完整證件 -->
+<section id="contact" class="page">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="tag reveal">Contact</p>
+    <h2 class="text-4xl font-black mt-2 reveal">Tell us about your business</h2>
+    <p class="muted mt-2 reveal">Choose a template, a package, or an overseas consultation. A human will follow up — the bot path is explained on the USA page and in the FAQ.</p>
+    <form id="leadForm" class="glass p-6 mt-8 reveal" novalidate>
+      <label class="block font-bold mt-2">Name</label><input name="name" required placeholder="Your name">
+      <label class="block font-bold mt-4">Email</label><input name="email" type="email" required placeholder="you@example.com">
+      <label class="block font-bold mt-4">I am interested in</label>
+      <select name="topic"><option>Launch — WordPress site (US$2,900)</option><option>Store — Shopify store (US$4,500)</option><option>SEO + GEO retainer</option><option>Care — US$149/month</option><option>Overseas consultation (Phase 1, bot → human)</option></select>
+      <label class="block font-bold mt-4">Template (optional)</label>
+      <select name="template"><option>Not sure yet</option><option>T1 Restaurant &amp; Cafe</option><option>T2 Salon, Beauty &amp; Spa</option><option>T3 Contractor &amp; Home Services</option><option>T4 Retail &amp; E-commerce</option><option>T5 Professional Services</option><option>T6 Medical, Dental &amp; Clinic</option><option>T7 Fitness &amp; Wellness Studio</option><option>T8 Real Estate &amp; Property</option><option>T9 Auto Repair &amp; Services</option><option>T10 Brand Store for Cross-border Sellers</option></select>
+      <label class="block font-bold mt-4">Message</label><textarea name="message" rows="4" placeholder="Tell us about your business, location, and timeline. Please do NOT send passwords or full ID documents here."></textarea>
+      <button class="btn mt-6" type="submit">Send enquiry →</button>
+      <p id="formMsg" class="mt-4" style="display:none; background:rgba(53,200,122,.15); border:1px solid rgba(53,200,122,.5); border-radius:12px; padding:14px;">Form received (demo — Supabase wiring next). This message has not been sent to a backend yet.</p>
+    </form>
+    <div class="glass p-5 mt-6 reveal"><p class="text-sm">Prefer consultation first? Start on the <a href="#usa" style="color:#35c87a">China / Hong Kong → USA page</a> — bot first, then a professional human customer service team on trigger conditions.</p></div>
+  </div>
+</section>
+</main>
+<footer class="relative z-10 border-t" style="border-color:rgba(255,255,255,.12)">
+  <div class="max-w-6xl mx-auto px-5 py-10 grid md:grid-cols-3 gap-6">
+    <div><strong>SiteSprout</strong><p class="muted text-sm mt-1">Websites that grow: built fast, then grown with SEO + GEO.</p></div>
+    <div class="muted text-sm"><a href="#services" style="color:#fff">Services</a><br><a href="#templates" style="color:#fff">Templates</a><br><a href="#pricing" style="color:#fff">Pricing</a><br><a href="#usa" style="color:#fff">China / Hong Kong → USA</a></div>
+    <div class="muted text-sm"><p>Layer 1 — this site: HTML + Tailwind CSS v3 + Vanilla JS + Three.js, via GitHub + Cloudflare Pages + Supabase + Stripe + Resend.</p><p class="mt-2">Layer 2 — client sites: WordPress (T1–T3, T5–T9) or Shopify (T4, T10), 100% client-owned.</p></div>
+  </div>
+  <div class="max-w-6xl mx-auto px-5 pb-8"><p class="muted text-sm">© SiteSprout. Prices in USD. No rankings, AI citations, revenue, or approval outcomes are promised. Temporary preview domain noted in v1: sitespout.orange.edu.kg (not live from this file). Final .com pending.</p></div>
+</footer>
+
+<script>
+/* ========== 路由：單頁 10 版塊切換（hash 路由，無需多檔案） ========== */
+function showPage() {
+  var hash = (location.hash || '#home').replace('#', '');
+  var valid = ['home','services','templates','template-detail','pricing','usa','process','work','faq','contact'];
+  if (valid.indexOf(hash) === -1) hash = 'home';
+  document.querySelectorAll('.page').forEach(function (s) { s.classList.toggle('active', s.id === hash); });
+  document.querySelectorAll('.navlink').forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + hash); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  revealVisible();
+}
+window.addEventListener('hashchange', showPage);
+/* 導航欄滾動透明變化 + 手機選單 */
+window.addEventListener('scroll', function () {
+  document.getElementById('topnav').classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+document.getElementById('menuBtn').addEventListener('click', function () {
+  var n = document.getElementById('navlinks'); n.classList.toggle('open'); n.classList.toggle('hidden');
+});
+/* 入場動畫：IntersectionObserver，JS 失效時內容仍可見（reveal 只在 JS 運行時隱藏） */
+function revealVisible() {
+  document.querySelectorAll('.page.active .reveal').forEach(function (el) { observer.observe(el); });
+}
+var observer = new IntersectionObserver(function (entries) {
+  entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+/* 滑鼠跟隨柔光 */
+var glow = document.getElementById('glow');
+document.addEventListener('mousemove', function (e) { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; }, { passive: true });
+/* ========== 聯繫表單佔位：只顯示演示訊息，絕不偽裝後端提交 ========== */
+document.getElementById('leadForm').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  document.getElementById('formMsg').style.display = 'block';
+});
+/* ========== Three.js Hero 輕量 3D 場景 ========== */
+/* 設計要點：輕質幾何體 + 低數量粒子，滑鼠/觸控視差與拖拽，效能守則見下方；CDN 失效時 hero 仍有 CSS 漸變後備，絕不空白 */
+(function initThree() {
+  try {
+    if (typeof THREE === 'undefined') return; // CDN 失效：保留 CSS 後備背景
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // 減動效偏好：不啟動動畫
+    var canvas = document.getElementById('hero3d'); if (!canvas) return;
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75)); // 效能上限：像素比封頂
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100); camera.position.z = 9;
+    var group = new THREE.Group(); scene.add(group);
+    var geo = new THREE.IcosahedronGeometry(2.2, 1);
+    var mat = new THREE.MeshBasicMaterial({ color: 0x35c87a, wireframe: true, transparent: true, opacity: 0.55 });
+    var mesh = new THREE.Mesh(geo, mat); group.add(mesh);
+    var inner = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 0), new THREE.MeshBasicMaterial({ color: 0x7ee8ad, wireframe: true, transparent: true, opacity: 0.35 }));
+    group.add(inner);
+    // 粒子：低數量（約 300 點），保證手機流暢
+    var count = 300, pos = new Float32Array(count * 3);
+    for (var i = 0; i < count; i++) { pos[i*3] = (Math.random()-0.5)*16; pos[i*3+1] = (Math.random()-0.5)*9; pos[i*3+2] = (Math.random()-0.5)*6; }
+    var pgeo = new THREE.BufferGeometry(); pgeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    var points = new THREE.Points(pgeo, new THREE.PointsMaterial({ color: 0x9be8c0, size: 0.06, transparent: true, opacity: 0.8 }));
+    scene.add(points);
+    var mx = 0, my = 0, tx = 0, ty = 0, dragging = false, lastX = 0, lastY = 0;
+    function onMove(x, y) { tx = (x / window.innerWidth - 0.5) * 2; ty = (y / window.innerHeight - 0.5) * 2; }
+    window.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY); }, { passive: true });
+    canvas.addEventListener('pointerdown', function (e) { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+    window.addEventListener('pointerup', function () { dragging = false; });
+    window.addEventListener('pointermove', function (e) { if (dragging) { tx += (e.clientX - lastX) * 0.004; ty += (e.clientY - lastY) * 0.004; lastX = e.clientX; lastY = e.clientY; } }, { passive: true });
+    function resize() {
+      var r = canvas.parentElement.getBoundingClientRect();
+      renderer.setSize(r.width, Math.max(r.height, 420), false);
+      camera.aspect = r.width / Math.max(r.height, 420); camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize); resize();
+    var running = true;
+    document.addEventListener('visibilitychange', function () { running = !document.hidden; if (running) animate(); }); // 切換分頁時暫停，省效能
+    function animate() {
+      if (!running) return; requestAnimationFrame(animate);
+      mx += (tx - mx) * 0.05; my += (ty - my) * 0.05;
+      group.rotation.y += 0.003; group.rotation.x = my * 0.25; group.rotation.y += mx * 0.01;
+      points.rotation.y += 0.0006;
+      renderer.render(scene, camera);
+    }
+    animate();
+  } catch (err) { /* 任何 3D 錯誤都不應破壞頁面：CSS 後備背景繼續顯示 */ console.warn('Three.js hero unavailable, CSS fallback in use.', err); }
+})();
+showPage();
+</script>
+</body>
+</html>
